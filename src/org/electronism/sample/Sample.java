@@ -365,6 +365,13 @@ public class Sample {
 		return nSamplesPerSec;
 	}
 
+	/**
+	 * @return get encoding
+	 */
+	public AudioFormat.Encoding getEncoding() {
+		return _format.getEncoding();
+	}
+
 
 //	/**
 //	 * @param samplesPerSec the nSamplesPerSec to set
