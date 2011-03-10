@@ -81,7 +81,7 @@ public class Sample {
 	 * 
 	 * (nBitsPerSample est le nombre de BITS par seconde, un octet comporte 8 bits) 
 	 */
-//	int nAvgBytesPerSec;
+	int nAvgBytesPerSec;
 	
 	/**
 	 *  contient la taille totale (en octets) d'un échantillon. Cette valeur fait également double emploi avec les autres valeurs enregistrées mais vous devez aussi la compléter correctement pour être certains que votre fichier sera compatible avec tous les programmes de son. Elle dépend :
@@ -109,7 +109,7 @@ public class Sample {
 	/**
 	 * Durée = dataSize / nAvgBytesPerSec
 	 */
-//	float time;
+	float time;
 	
 	/**
 	 * Wave data
@@ -164,7 +164,10 @@ public class Sample {
 //		this.nSamplesPerSec = ByteHelper.byte2int(header,24);
 		this.nSamplesPerSec = _format.getSampleRate();
 //		this.nAvgBytesPerSec = ByteHelper.byte2int(header,28);
-//		this.nBlockAlign = ByteHelper.byte2short(header, 30);
+
+		 nAvgBytesPerSec = (int) (nSamplesPerSec* nBitsPerSample/8* nChannel);
+		
+		//		this.nBlockAlign = ByteHelper.byte2short(header, 30);
 //		this.nBitsPerSample = ByteHelper.byte2short(header, 32);
 		this.nBitsPerSample = _format.getSampleSizeInBits();
 		
@@ -198,7 +201,7 @@ public class Sample {
 		
 		}
 				
-//		updateTime();
+		updateTime();
 		
 //		is.close();
 	}
@@ -207,10 +210,10 @@ public class Sample {
 	/**
 	 * Met a jour la durée
 	 */
-//	public void updateTime()
-//	{
-//		this.time = (float)data.getDataSize()/(float)this.nAvgBytesPerSec;
-//	}
+	public void updateTime()
+	{
+		this.time = (float)data.getDataSize()/(float)this.nAvgBytesPerSec;
+	}
 	
 	
 	public String toString()
@@ -438,9 +441,9 @@ public class Sample {
 	/**
 	 * @return the time
 	 */
-//	public float getTime() {
-//		return time;
-//	}
+	public float getTime() {
+		return time;
+	}
 
 
 	/**
