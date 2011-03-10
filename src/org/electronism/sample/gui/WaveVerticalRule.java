@@ -79,7 +79,6 @@ public class WaveVerticalRule extends JPanel {
 				{
 					FontMetrics fm = g.getFontMetrics(font);
 					int width = (int)Math.ceil(fm.getStringBounds("-9.9", g).getWidth())+(hBorder*2)+lineWith+2;
-			System.out.println(width);
 					Dimension dim = new Dimension(width, 10);
 					setSize(dim);
 					setMinimumSize(dim);

@@ -36,7 +36,6 @@ public class SamplePoint {
 
 			case 32: // 32 bits
 				channel[c-1] = wave.getData().get32bitPoint(byteOffset);		
-				System.out.println(channel[c-1]);
 				break;
 
 			default:

@@ -484,7 +484,6 @@ public class Sample {
 	 */
 	public static double getYRatio(Sample wave, int maxHeight) {
 		long maxPoint = 1;
-		System.out.println(wave.getNBitsPerSample());
 		
 		switch (wave.getNBitsPerSample()) {
 			case 8: // 8 bits

@@ -43,7 +43,6 @@ public class WaveWindow extends JFrame
 						
 						Sample wav;
 							wav = new Sample(file);
-						System.out.println(wav);
 						editor.setWave(wav);
 					} catch (Exception e1) {
 						e1.printStackTrace();
