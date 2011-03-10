@@ -1,5 +1,6 @@
 package org.electronism.sample;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -142,7 +143,9 @@ public class Sample {
 		throws IOException, UnsupportedAudioFileException
 	{
 		
-		AudioInputStream ais = AudioSystem.getAudioInputStream(is);
+		AudioInputStream ais = AudioSystem.getAudioInputStream(
+				new BufferedInputStream(is));
+		
 		_format = ais.getFormat();
 
 //		byte[] header = new byte[44];
