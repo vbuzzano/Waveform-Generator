@@ -164,9 +164,7 @@ public class Sample {
 //		this.nSamplesPerSec = ByteHelper.byte2int(header,24);
 		this.nSamplesPerSec = _format.getSampleRate();
 //		this.nAvgBytesPerSec = ByteHelper.byte2int(header,28);
-
-		 nAvgBytesPerSec = (int) (nSamplesPerSec* nBitsPerSample/8* nChannel);
-		
+	
 		//		this.nBlockAlign = ByteHelper.byte2short(header, 30);
 //		this.nBitsPerSample = ByteHelper.byte2short(header, 32);
 		this.nBitsPerSample = _format.getSampleSizeInBits();
@@ -175,7 +173,7 @@ public class Sample {
 //		this.dataZone = ByteHelper.byte2String(header, 36, 4);				
 //		int dataSize = ByteHelper.byte2int(header, 40);
 		
-		
+		this.nAvgBytesPerSec = (int) (nSamplesPerSec* nBitsPerSample/8* nChannel);
 		
 //		byte[] d = new byte[(int)dataSize];
 //		is.read(d);
