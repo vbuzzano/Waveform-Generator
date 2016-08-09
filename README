@@ -1,4 +1,4 @@
-Waveform Generator V1.0 by Vincent Buzzano <vincent.buzzano@gmail.ch>
+Waveform Generator V2.0 by Vincent Buzzano <vincent.buzzano@gmail.ch>
 
 After a search of waveform generator, I decided to create it myself because I had an urgent need.
 
@@ -7,6 +7,9 @@ This CAN draw On Any Generator Graphics.
 Actually only PCM (Singed and unsigned) Will Work
 8bit, 16bit, 24bit
 mono, stereo
+
+Edit:
+Based on Interval Music Compositor, I have add some decoder to be able to process Ogg, Mp3, Flac (16bit only) and Aac 
 
 Others formats has not yet Been Tested.
 
