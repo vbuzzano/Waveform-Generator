@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.googlecode.soundlibs</groupId>
+    <artifactId>soundlibs</artifactId>
+    <version>1.4</version>
+  </parent>
+  <artifactId>jlayer</artifactId>
+  <version>1.0.1.4</version>
+  <packaging>bundle</packaging>
+  <name>JLayer</name>
+  <description>Maven artifact for JLayer library. http://www.javazoom.net/javalayer/sources.html</description>
+  <developers>
+    <developer>
+      <name>JavaZoom</name>
+      <email>jlayer@javazoom.net</email>
+      <url>http://www.javazoom.net/javalayer/javalayer.html</url>
+      <organizationUrl>http://www.javazoom.net/javalayer/about.html</organizationUrl>
+      <roles>
+        <role>Original Author</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Patrik Duditš</name>
+      <email>soundlibs@dudits.net</email>
+      <url>http://pato.dudits.net/</url>
+      <roles>
+        <role>Packager</role>
+      </roles>
+    </developer>
+  </developers>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src</directory>
+        <includes>
+          <include>**/*.ser</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+</project>

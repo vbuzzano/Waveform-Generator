@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.googlecode.soundlibs</groupId>
+    <artifactId>soundlibs</artifactId>
+    <version>1.4</version>
+  </parent>
+  <artifactId>tritonus-all</artifactId>
+  <version>0.3.7.2</version>
+  <packaging>bundle</packaging>
+  <name>tritonus-all</name>
+  <description>Complete tritonus package with all plugins</description>
+  <developers>
+    <developer>
+      <name>Florian Bomers</name>
+      <url>http://www.bomers.de</url>
+      <organizationUrl>http://tritonus.org</organizationUrl>
+      <roles>
+        <role>Original Author</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Patrik Duditš</name>
+      <email>soundlibs@dudits.net</email>
+      <url>http://pato.dudits.net/</url>
+      <roles>
+        <role>Packager</role>
+      </roles>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>com.googlecode.soundlibs</groupId>
+      <artifactId>jorbis</artifactId>
+      <version>0.0.17-2</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>../tritonus-cvs/src/classes</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>../tritonus-cvs/src/packaging/tritonus_core</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org/tritonus/debug/AJ*.java</exclude>
+            <exclude>org/tritonus/saol/**</exclude>
+            <exclude>org/tritonus/debug/Utils.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org/tritonus/debug/AJ*.java</exclude>
+            <exclude>org/tritonus/saol/**</exclude>
+            <exclude>org/tritonus/debug/Utils.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
