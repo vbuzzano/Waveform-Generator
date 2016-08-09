@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0">
+    <info organisation="org.electronism" module="waveform-generator"/>
+    
+    <configurations>
+    </configurations>
+
+    <dependencies>
+        <dependency org="commons-io" name="commons-io" rev="2.4" />
+        <dependency org="com.googlecode.soundlibs" name="tritonus-all" rev="0.3.7.2" />
+        <dependency org="com.googlecode.soundlibs" name="mp3spi" rev="1.9.5.4" />
+    </dependencies>
+</ivy-module>
