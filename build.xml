@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="waveform-generator" default="build-full" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+    <property file="build.properties"/>
+
+    <target name="resolve">
+        <ivy:configure />
+        <ivy:resolve file="ivy.xml" />
+        <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
+    </target>
+
+    <property name="source.dir" value="src"/>
+    <path id="classpath">
+        <fileset dir="./lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="build">
+        <delete dir="tmp/classes" />
+        <mkdir dir="tmp/classes" />
+        <mkdir dir="dist"/>
+        <javac srcdir="${source.dir}" destdir="tmp/classes" target="1.7" debug="true" debuglevel="lines,vars,source">
+            <classpath refid="classpath" />
+        </javac>
+        <copy todir="tmp/classes">
+            <fileset dir="src">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </fileset>
+        </copy>
+        <jar destfile="dist/waveform-generator-${version}.jar" basedir="tmp/classes">
+            <manifest>
+                <section name="Waveform Generator">
+                    <attribute name="Specification-Title" value="Wavefomr Generator ${version}"/>
+                </section>
+            </manifest>
+        </jar>
+        <delete dir="tmp" />
+    </target>
+	
+    <target name="javadoc">
+        <javadoc packagenames="org.electronism.*"
+          sourcepath="src"
+          defaultexcludes="yes"
+          destdir="documentation"
+          author="true"
+          version="true"
+          use="true"
+          windowtitle="Waveform Generator Api">
+        </javadoc>
+    </target>
+
+    <target name="build-full" depends="build, javadoc">
+    </target>
+
+</project>
