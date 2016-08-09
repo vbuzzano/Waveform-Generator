@@ -28,8 +28,7 @@ public class Generator {
     /**
      * Generate a waveform image file for a sound
      * @param file
-     * @param width
-     * @param height
+     * @param options
      * @param image
      * @return
      * @throws IOException 
@@ -44,19 +43,28 @@ public class Generator {
     /**
      * Generate an waveform for a sound
      * @param soundFile
-     * @param width
-     * @param height
+     * @param options
      * @return
      * @throws UnsupportedAudioFileException
      * @throws IOException
      */
     public BufferedImage generateImage(File soundFile, WaveformOption options) throws UnsupportedAudioFileException, IOException {
-        BufferedImage image = new BufferedImage(options.getWidth(), options.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Sample sample = loadSample(soundFile);
+        return generateImage(sample, options);
+    }
+    
+    /**
+     * Generate an waveform for a sound
+     * @param sample
+     * @param options
+     * @return
+     * @throws UnsupportedAudioFileException
+     * @throws IOException
+     */
+    public BufferedImage generateImage(Sample sample, WaveformOption options) throws UnsupportedAudioFileException, IOException {
+        BufferedImage image = new BufferedImage(options.getWidth(), options.getHeight(), BufferedImage.TYPE_INT_ARGB);
         WaveformGenerator waveformGenerator = new WaveformGenerator(sample, options.getWidth(), options.getHeight());
-        
         waveformGenerator.setOptions(options);     
-        
         waveformGenerator.draw(image.getGraphics());
         return image;
     }
