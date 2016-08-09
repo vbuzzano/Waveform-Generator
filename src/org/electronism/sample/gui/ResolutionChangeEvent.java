@@ -1,10 +1,6 @@
 package org.electronism.sample.gui;
 
 
-import java.awt.AWTEvent;
-import java.awt.Event;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.EventObject;
 
 /**
@@ -12,8 +8,9 @@ import java.util.EventObject;
  */
 
 public class ResolutionChangeEvent extends EventObject {
+    private static final long serialVersionUID = 1L;
 
-	private double resolution = 1;
+    private double resolution = 1;
 
     /**
      * Timestamp of when this event occurred. Because an ActionEvent is a high-

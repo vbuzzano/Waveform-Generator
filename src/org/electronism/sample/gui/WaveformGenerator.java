@@ -5,11 +5,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import org.electronism.sample.Sample;
 import org.electronism.sample.SampleRange;
+import org.electronism.sample.WaveformOption;
 
 
 public class WaveformGenerator 
@@ -465,4 +464,25 @@ public class WaveformGenerator
 		this.wave = sample;
 		
 	}
+
+
+    public void setOptions(WaveformOption options) {
+        setBackgroundColor(options.getBackgroundColor());
+        setCenterLineColor(options.getCenterLineColor());
+        setWaveColor(options.getWaveColor());
+        setWaveAverageColor(options.getWaveAverageColor());
+        setPointColor(options.getPointColor());
+
+        setWidth(options.getWidth());
+        setHeight(options.getHeight());
+        
+        setPaddingBottom(options.getPaddingBottom());
+        setPaddingLeft(options.getPaddingLeft());
+        setPaddingRight(options.getPaddingRight());
+        setPaddingTop(options.getPaddingTop());
+                
+        setShowCenterLine(options.isShowCenterLine());
+
+        zoomTo(options.getZoom());
+    }
 }

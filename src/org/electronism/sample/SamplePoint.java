@@ -1,8 +1,5 @@
 package org.electronism.sample;
 
-import org.electronism.helpers.ByteHelper;
-
-
 public class SamplePoint {
 	
 	long[] channel;

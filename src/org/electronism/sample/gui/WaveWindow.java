@@ -1,29 +1,21 @@
 package org.electronism.sample.gui;
 import java.awt.BorderLayout;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.electronism.sample.Generator;
 import org.electronism.sample.Sample;
 
 
-public class WaveWindow extends JFrame 
-{
-
-	WaveEditor editor;
+public class WaveWindow extends JFrame {
+    private static final long serialVersionUID = 1L;
+    WaveEditor editor;
 	
 	public WaveWindow()
 	{
@@ -40,9 +32,10 @@ public class WaveWindow extends JFrame
 				{
 					File file = fc.getSelectedFile();
 					try {
-						
-						Sample wav;
-							wav = new Sample(file);
+						Generator generator = new Generator();
+						Sample wav = generator.loadSample(file);
+
+//						Sample wav = new Sample(file);
 						editor.setWave(wav);
 					} catch (Exception e1) {
 						e1.printStackTrace();

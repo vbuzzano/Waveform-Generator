@@ -2,10 +2,7 @@ package org.electronism.sample.gui;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,12 +10,13 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import org.electronism.sample.Sample;
-import org.electronism.sample.SampleRange;
 
 
 public class WaveView extends JPanel 
 {
-	Sample wave;
+    private static final long serialVersionUID = 1L;
+
+    Sample wave;
 	WaveformGenerator generator;
 	
 	public WaveView()

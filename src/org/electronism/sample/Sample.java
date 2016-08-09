@@ -13,7 +13,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.electronism.helpers.ByteHelper;
+import org.apache.commons.io.IOUtils;
 
 
 /**
@@ -24,49 +24,20 @@ import org.electronism.helpers.ByteHelper;
  *
  */
 public class Sample {	
-	
-	/**
-	 * On trouve d'abord la mention « RIFF » dans les 4 premiers octets du fichier ($52, $49, $42, $42 en hexadécimal. Ce sont les codes ASCII des lettres R,I,F,F)
-	 */
-//	String tag1; // "RIFF" 4 byte
 
 	/**
-	 * On trouve ensuite la taille TOTALE du fichier codée sous la forme d'un entier long (4 octets, donc)
+	 * Format
 	 */
-//	int size;
-
-	/**
-	 * On trouve ensuite la mention « WAVE» soit 4 caractères ce qui nous donne en hexadécimal : $57,$41,$56,$45
-	 */
-//	String format; //  "WAVE" 4 byte
-
 	AudioFormat _format;
-	
-	/**
-	 * Indicateur de zone : « fmt  » soit 4 caractères (attention, le dernier caractère est un espace) ce qui nous donne en hexadécimal : $66,$6D,$74,$20. « fmt » est l'abréviation de « format ». Cet indicateur nous prévient que les informations qui vont suivre concernent le format du son (comme vous allez le voir)
-	 */
-//	String formatZone = "fmt "; // "fmt " 4 byte
-	
-	/**
-	 * Taille de la structure WAVEFORMAT sous la forme d'un entier long (soit 4 octets). La structure WAVEFORMAT comporte 16 octets. On trouve donc, logiquement, la valeur 16 (ou $10 en hexadécimal) stockée à cet endroit.
-	 */
-//	int lgdef; // Taille de la structure WAVEFORMAT
-
-	/**
-	 * ce champ contient un code correspondant au format exact de codage des données. Pour les fichiers de type PCM, ce champ contiendra la valeur 1
-	 */
-//	short wFormatTag;
 	
 	/**
 	 * nombre de canaux. On aura la valeur 1 pour les sons mono, 2 pour les sons stéréo, et éventuellement plus pour les sons moins standards.
 	 */
-//	short nChannel;
 	int nChannel;
 	
 	/**
 	 * nombre d'échantillons par seconde
 	 */
-//	int nSamplesPerSec;
 	float nSamplesPerSec;
 
 	/**
@@ -84,27 +55,9 @@ public class Sample {
 	int nAvgBytesPerSec;
 	
 	/**
-	 *  contient la taille totale (en octets) d'un échantillon. Cette valeur fait également double emploi avec les autres valeurs enregistrées mais vous devez aussi la compléter correctement pour être certains que votre fichier sera compatible avec tous les programmes de son. Elle dépend :
-	 *
-	 * •  du nombre d'octets par échantillon
- 	 * •  du nombre de canaux
-	 *
-	 * Elle se calcul comme suit :
-	 * nBlockAlign = nBitsPerSample/8* nChannels*
-	 * 
-	 * (nBitsPerSample est le nombre de BITS par seconde, un octet comporte 8 bits) 
-	 */
-//	int nBlockAlign;
-	
-	/**
 	 * contient le nombre de bits par échantillon (voir note concernant l'amplitude)
 	 */
 	int nBitsPerSample;
-	
-	/**
-	 * Indicateur de zone : «data» soit 4 caractères ce qui nous donne en hexadécimal : $64,$61,$74,$61. Cet indicateur nous prévient que les informations qui vont suivre sont les données proprement dites.
-	 */
-//	String dataZone = "data";
 	
 	/**
 	 * Durée = dataSize / nAvgBytesPerSec
@@ -127,9 +80,7 @@ public class Sample {
 	 * @throws IOException 
 	 * @throws UnsupportedAudioFileException 
 	 */
-	public Sample(File file) 
-		throws IOException, UnsupportedAudioFileException
-	{
+	public Sample(File file) throws IOException, UnsupportedAudioFileException {
 		this(new FileInputStream(file));
 	}
 	
@@ -139,58 +90,30 @@ public class Sample {
 	 * @throws IOException
 	 * @throws UnsupportedAudioFileException 
 	 */
-	public Sample(InputStream is) 
-		throws IOException, UnsupportedAudioFileException
-	{
-		
-		AudioInputStream ais = AudioSystem.getAudioInputStream(
-				new BufferedInputStream(is));
-		
+	public Sample(InputStream is) throws IOException, UnsupportedAudioFileException {
+	    this(AudioSystem.getAudioInputStream(new BufferedInputStream(is)));		
+	}
+	
+	public Sample(AudioInputStream ais) throws IOException {
+
 		_format = ais.getFormat();
 
-//		byte[] header = new byte[44];
-//		is.read(header, 0, 44);
-		
-//		this.tag1 = ByteHelper.byte2String(header, 0, 4);
-//		this.size = ByteHelper.byte2int(header, 4);
-		
-//		this.format = ByteHelper.byte2String(header, 8, 4);
-		
-//		this.formatZone = ByteHelper.byte2String(header, 12, 4);
-//		this.lgdef = ByteHelper.byte2int(header, 16);
-//		this.wFormatTag = ByteHelper.byte2short(header, 20);
-//		this.nChannel = ByteHelper.byte2short(header, 22);
 		this.nChannel = _format.getChannels();
-//		this.nSamplesPerSec = ByteHelper.byte2int(header,24);
 		this.nSamplesPerSec = _format.getSampleRate();
-//		this.nAvgBytesPerSec = ByteHelper.byte2int(header,28);
-	
-		//		this.nBlockAlign = ByteHelper.byte2short(header, 30);
-//		this.nBitsPerSample = ByteHelper.byte2short(header, 32);
 		this.nBitsPerSample = _format.getSampleSizeInBits();
-		
-		
-//		this.dataZone = ByteHelper.byte2String(header, 36, 4);				
-//		int dataSize = ByteHelper.byte2int(header, 40);
-		
 		this.nAvgBytesPerSec = (int) (nSamplesPerSec* nBitsPerSample/8* nChannel);
-		
-//		byte[] d = new byte[(int)dataSize];
-//		is.read(d);
-		
-		byte[] d = new byte[(int)(ais.getFrameLength() * _format.getFrameSize())];
-		ais.read(d);
-		data = new SampleData(d);
-		
+
+		byte d[] = IOUtils.toByteArray(ais);
+
+        data = new SampleData(d);
+
 		points = new ArrayList<SamplePoint>();
 		
-		int count = 0;
-		for(int i = 0; i < d.length; i++)
+		for(int i = 0; i < data.dataSize; i++)
 		{
 			try {
 				SamplePoint point = new SamplePoint(this, i);
 				points.add(point);
-				count++;
 
 			} catch(ArrayIndexOutOfBoundsException e)
 			{
@@ -200,8 +123,6 @@ public class Sample {
 		}
 				
 		updateTime();
-		
-//		is.close();
 	}
 
 
@@ -246,115 +167,11 @@ public class Sample {
 
 
 	/**
-	 * @return the tag1
-	 */
-/*	public String getTag1() {
-		return tag1;
-	}
-*/
-
-	/**
-	 * @param tag1 the tag1 to set
-	 */
-/*	public void setTag1(String tag1) {
-		this.tag1 = tag1;
-	}
-*/
-
-	/**
-	 * @return the size
-	 */
-//	public int getSize() {
-//		return size;
-//	}
-
-
-	/**
-	 * @param size the size to set
-	 */
-//	public void setSize(int size) {
-//		this.size = size;
-//	}
-
-
-	/**
-	 * @return the format
-	 */
-//	public String getFormat() {
-//		return format;
-//	}
-
-
-	/**
-	 * @param format the format to set
-	 */
-//	public void setFormat(String format) {
-//		this.format = format;
-//	}
-
-
-	/**
-	 * @return the formatZone
-	 */
-//	public String getFormatZone() {
-//		return formatZone;
-//	}
-
-
-	/**
-	 * @param formatZone the formatZone to set
-	 */
-//	public void setFormatZone(String formatZone) {
-//		this.formatZone = formatZone;
-//	}
-
-
-	/**
-	 * @return the lgdef
-	 */
-//	public int getLgdef() {
-//		return lgdef;
-//	}
-
-
-	/**
-	 * @param lgdef the lgdef to set
-	 */
-//	public void setLgdef(int lgdef) {
-//		this.lgdef = lgdef;
-//	}
-
-
-	/**
-	 * @return the wFormatTag
-	 */
-//	public short getWFormatTag() {
-//		return wFormatTag;
-//	}
-
-
-	/**
-	 * @param formatTag the wFormatTag to set
-	 */
-//	public void setWFormatTag(short formatTag) {
-//		wFormatTag = formatTag;
-//	}
-
-
-	/**
 	 * @return the nChannel
 	 */
 	public int getNChannel() {
 		return _format.getChannels();
 	}
-
-//	/**
-//	 * @param channel the nChannel to set
-//	 */
-//	public void setNChannel(short channel) {
-//		nChannel = channel;
-//	}
-
 
 	/**
 	 * @return the nSamplesPerSec
@@ -371,51 +188,10 @@ public class Sample {
 	}
 
 
-//	/**
-//	 * @param samplesPerSec the nSamplesPerSec to set
-//	 */
-//	public void setNSamplesPerSec(int samplesPerSec) {
-//		nSamplesPerSec = samplesPerSec;
-//	}
-
-
-	/**
-	 * @return the nAvgBytesPerSec
-	 */
-//	public int getNAvgBytesPerSec() {
-//		return nAvgBytesPerSec;
-//	}
-
-
-//	/**
-//	 * @param avgBytesPerSec the nAvgBytesPerSec to set
-//	 */
-//	public void setNAvgBytesPerSec(int avgBytesPerSec) {
-//		nAvgBytesPerSec = avgBytesPerSec;
-//	}
-
-
-	/**
-	 * @return the nBlockAlign
-	 */
-/*	public int getNBlockAlign() {
-		return nBlockAlign;
-	}
-*/
-
-	/**
-	 * @param blockAlign the nBlockAlign to set
-	 */
-//	public void setNBlockAlign(int blockAlign) {
-//		nBlockAlign = blockAlign;
-//	}
-
-
 	/**
 	 * @return the nBitsPerSample
 	 */
 	public int getNBitsPerSample() {
-//		return nBitsPerSample;
 		return _format.getSampleSizeInBits();
 	}
 	
@@ -429,35 +205,11 @@ public class Sample {
 
 
 	/**
-	 * @return the dataZone
-	 */
-/*	public String getDataZone() {
-		return dataZone;
-	}
-*/
-
-	/**
-	 * @param dataZone the dataZone to set
-	 */
-/*	public void setDataZone(String dataZone) {
-		this.dataZone = dataZone;
-	}
-*/
-	/**
 	 * @return the time
 	 */
 	public float getTime() {
 		return time;
 	}
-
-
-	/**
-	 * @param time the time to set
-	 */
-//	public void setTime(float time) {
-//		time = time;
-//	}
-
 
 	/**
 	 * @return the data

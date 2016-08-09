@@ -1,11 +1,7 @@
 package org.electronism.sample.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Scrollbar;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -13,23 +9,22 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import org.electronism.sample.Sample;
 
 
 public class WaveEditor extends JPanel 
 {
-	/**
+    private static final long serialVersionUID = 1L;
+
+    /**
 	 * The Wave view
 	 */
 	private WaveView view;
 	
-	WaveFormEditor form;
+	WaveformEditor form;
 	Scrollbar scrollbar;
 	public WaveEditor()
 	{
@@ -70,7 +65,7 @@ public class WaveEditor extends JPanel
 		});
 		
 		
-		form = new WaveFormEditor(this);
+		form = new WaveformEditor(this);
 
 //		add(form, BorderLayout.CENTER);
 		add(scrollbar, BorderLayout.SOUTH);

@@ -5,14 +5,16 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 
 public class WaveVerticalRule extends JPanel {
-	Font font = new Font("Arial", 0, 10);
+
+    private static final long serialVersionUID = 1L;
+
+    Font font = new Font("Arial", 0, 10);
 	
 	static Color COLOR_BACKGROUND = Color.GRAY;
 	static Color COLOR_LIGHT_BORDER = Color.LIGHT_GRAY;
@@ -30,7 +32,6 @@ public class WaveVerticalRule extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		Rectangle2D rct;
 		
 		// backup current color and font
 		Color c = g.getColor();
@@ -39,7 +40,6 @@ public class WaveVerticalRule extends JPanel {
 		
 		// set Default font
 		g.setFont(font);
-		FontMetrics fm = g.getFontMetrics(font);
 
 		// Draw Rule 
 		g.setColor(COLOR_BACKGROUND);

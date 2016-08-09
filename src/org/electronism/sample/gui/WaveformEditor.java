@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
@@ -15,9 +13,11 @@ import org.electronism.helpers.ByteHelper;
 import org.electronism.sample.Sample;
 
 
-public class WaveFormEditor extends JPanel 
+public class WaveformEditor extends JPanel 
 {
-	WaveEditor editor;
+    private static final long serialVersionUID = 1L;
+
+    WaveEditor editor;
 	Sample wave;
 	Font font = new Font("Arial", 0, 10);
 
@@ -54,7 +54,7 @@ public class WaveFormEditor extends JPanel
 	}
 	
 	
-	public WaveFormEditor(WaveEditor editor)
+	public WaveformEditor(WaveEditor editor)
 	{
 		this.editor = editor;
 		
@@ -170,7 +170,7 @@ public class WaveFormEditor extends JPanel
 		
 		g.setClip(rulesOffset, rulesOffset, getWidth(), getHeight()-rulesOffset);
 
-		int avg = 0, avg2 = 0;
+		int avg = 0;
 		if (wave != null)
 		{
 			byte[] data = wave.getData().getData();
@@ -278,8 +278,6 @@ public class WaveFormEditor extends JPanel
 							g.drawLine(rulesOffset+x, rulesOffset+verticalBorder+half+min, rulesOffset+x, rulesOffset+verticalBorder+half+avg);
 						else if (min > 0)
 							g.drawLine(rulesOffset+x,rulesOffset+verticalBorder+half+max, rulesOffset+x, rulesOffset+verticalBorder+half+avg);
-
-						avg2 = avg;
 
 				}
 				
