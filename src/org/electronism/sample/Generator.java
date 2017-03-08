@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -20,11 +21,30 @@ import org.electronism.sample.wave.WaveAudioDecoder;
 public class Generator {
 
     private List<AudioDecoder> decoders;
-    
-    public Generator() {
+
+    private AudioStandardizer audioStandardizer = new SampleHelper();
+
+    public Generator(){
         prepareAudioDecoders();
     }
 
+    public AudioFormat getFormat(File soundFile) throws UnsupportedAudioFileException, IOException {
+        AudioDecoder decoder = getDecoderFor(soundFile);
+        if (decoder == null)
+            throw new Error("No decoder found for file " + soundFile.getAbsolutePath());
+        
+        return decoder.getAudioFormat(soundFile);
+    }
+    
+
+    public String getAudioContainer(File soundFile) throws UnsupportedAudioFileException, IOException {
+        AudioDecoder decoder = getDecoderFor(soundFile);
+        if (decoder == null)
+            throw new Error("No decoder found for file " + soundFile.getAbsolutePath());
+        
+        return decoder.getAudioContainer();
+    }
+    
     /**
      * Generate a waveform image file for a sound
      * @param file
@@ -49,7 +69,7 @@ public class Generator {
      * @throws IOException
      */
     public BufferedImage generateImage(File soundFile, WaveformOption options) throws UnsupportedAudioFileException, IOException {
-        Sample sample = loadSample(soundFile);
+        Sample sample = loadStandardizedSample(soundFile);
         return generateImage(sample, options);
     }
     
@@ -68,7 +88,7 @@ public class Generator {
         waveformGenerator.draw(image.getGraphics());
         return image;
     }
-    
+
     /**
      * Generate a sample for a sound
      * @param soundFile
@@ -84,6 +104,23 @@ public class Generator {
         AudioInputStream ais = decoder.decode(soundFile);
         return new Sample(ais);
     }
+    
+    /**
+     * Generate a standardized sample for a sound
+     * @param soundFile
+     * @return
+     * @throws UnsupportedAudioFileException
+     * @throws IOException
+     */
+    public Sample loadStandardizedSample(File soundFile) throws UnsupportedAudioFileException, IOException {
+        AudioDecoder decoder = getDecoderFor(soundFile);
+        if (decoder == null)
+            throw new Error("No decoder found for file " + soundFile.getAbsolutePath());
+        
+        AudioInputStream ais = decoder.decodeAndStandardize(soundFile);
+        return new Sample(ais);
+    }
+
 
     /**
      * Find decoder for a sound
@@ -99,11 +136,21 @@ public class Generator {
     }
 
     /**
+     * Standardize an audio input stream
+     * @param ais
+     * @return
+     */
+
+    public AudioInputStream standardize(AudioInputStream ais) {
+        return audioStandardizer.standardize(ais);
+    }
+
+    /**
      * Prepare decoders
      */
     private void prepareAudioDecoders() {
         decoders = new ArrayList<AudioDecoder>();
-        AudioStandardizer audioStandardizer = new SampleHelper();
+        
 
         decoders.add(new AacAudioDecoder(audioStandardizer));
         decoders.add(new WaveAudioDecoder(audioStandardizer));

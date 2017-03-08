@@ -33,7 +33,7 @@ public class WaveWindow extends JFrame {
 					File file = fc.getSelectedFile();
 					try {
 						Generator generator = new Generator();
-						Sample wav = generator.loadSample(file);
+						Sample wav = generator.loadStandardizedSample(file);
 
 //						Sample wav = new Sample(file);
 						editor.setWave(wav);

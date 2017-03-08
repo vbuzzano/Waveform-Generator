@@ -17,35 +17,70 @@ import org.tritonus.sampled.file.jorbis.JorbisAudioFileReader;
  */
 public class OggAudioDecoder implements AudioDecoder {
 
-  private OggProperties oggFile = new OggProperties();
-  private AudioStandardizer audioStandardizer;
+    private OggProperties     oggFile = new OggProperties();
+    private AudioStandardizer audioStandardizer;
 
-  public OggAudioDecoder(AudioStandardizer audioStandardizer) {
-    this.audioStandardizer = audioStandardizer;
-  }
+    public OggAudioDecoder(AudioStandardizer audioStandardizer) {
+        this.audioStandardizer = audioStandardizer;
+    }
 
-  @Override
-  public AudioInputStream decode(File inputFile) throws UnsupportedAudioFileException, IOException {
+    @Override
+    public AudioInputStream decodeAndStandardize(File inputFile)
+            throws UnsupportedAudioFileException, IOException
+    {
+        return standardize(decode(inputFile));
+    }
 
-    AudioInputStream oggAis = null;
-    AudioInputStream result = null;
+    @Override
+    public AudioInputStream decode(File inputFile)
+            throws UnsupportedAudioFileException, IOException
+    {
 
-    JorbisAudioFileReader reader = new JorbisAudioFileReader();
-    oggAis = reader.getAudioInputStream(inputFile);
+        AudioInputStream oggAis = null;
+        AudioInputStream result = null;
 
-    AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, oggAis.getFormat().getSampleRate(), 16, oggAis.getFormat().getChannels(),
-        oggAis.getFormat().getChannels() * 2, oggAis.getFormat().getSampleRate(), false);
+        JorbisAudioFileReader reader = new JorbisAudioFileReader();
+        oggAis = reader.getAudioInputStream(inputFile);
 
-    JorbisFormatConversionProvider oggReader = new JorbisFormatConversionProvider();
-    result = oggReader.getAudioInputStream(decodedFormat, oggAis);
+        AudioFormat decodedFormat = new AudioFormat(
+                AudioFormat.Encoding.PCM_SIGNED, oggAis.getFormat()
+                        .getSampleRate(), 16, oggAis.getFormat().getChannels(),
+                oggAis.getFormat().getChannels() * 2, oggAis.getFormat()
+                        .getSampleRate(), false);
 
-    return audioStandardizer.standardize(result);
-  }
+        JorbisFormatConversionProvider oggReader = new JorbisFormatConversionProvider();
+        result = oggReader.getAudioInputStream(decodedFormat, oggAis);
 
-  @Override
-  public boolean isAbleToDecode(File file) {
-    return oggFile.isOfThisType(file);
-  }
+        return result;
+    }
 
+    @Override
+    public boolean isAbleToDecode(File file) {
+        return oggFile.isOfThisType(file);
+    }
 
+    @Override
+    public AudioInputStream standardize(AudioInputStream ais) {
+        return audioStandardizer.standardize(ais);
+    }
+
+    @Override
+    public AudioFormat getAudioFormat(File inputFile)
+            throws UnsupportedAudioFileException, IOException
+    {
+        AudioInputStream ais = null;
+
+        JorbisAudioFileReader reader = new JorbisAudioFileReader();
+        ais = reader.getAudioInputStream(inputFile);
+
+        AudioFormat format = ais.getFormat();
+        ais.close();
+
+        return format;
+    }
+
+    @Override
+    public String getAudioContainer() {
+        return "Ogg";
+    }
 }

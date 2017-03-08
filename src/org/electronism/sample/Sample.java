@@ -123,6 +123,8 @@ public class Sample {
 		}
 				
 		updateTime();
+		
+		ais.close();
 	}
 
 

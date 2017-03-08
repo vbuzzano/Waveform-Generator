@@ -30,109 +30,180 @@ import org.electronism.sample.AudioStandardizer;
  */
 public class AacAudioDecoder implements AudioDecoder {
 
-  private AacProperties aacFile = new AacProperties();
-  private final AudioStandardizer audioStandardizer;
+    private AacProperties           aacFile = new AacProperties();
+    private final AudioStandardizer audioStandardizer;
 
-  public AacAudioDecoder(AudioStandardizer audioStandardizer) {
-    this.audioStandardizer = audioStandardizer;
-  }
-
-  @Override
-  public AudioInputStream decode(File inputFile) throws UnsupportedAudioFileException, IOException {
-    AudioInputStream result = null;
-
-    /* We cascade different methods here since every one is usable for another type of aac file. */
-    try {
-      result = new AACAudioFileReader().getAudioInputStream(inputFile);
-    }
-    catch (Exception e) {
-      // nop
-    }
-    
-    if (result == null) {
-      try {
-        result = decodeAAC(inputFile);
-      }
-      catch (Exception e) {
-        result = decodeMP4(inputFile);
-      }
+    public AacAudioDecoder(AudioStandardizer audioStandardizer) {
+        this.audioStandardizer = audioStandardizer;
     }
 
-    return audioStandardizer.standardize(result);
-  }
+    @Override
+    public AudioInputStream decodeAndStandardize(File inputFile)
+            throws UnsupportedAudioFileException, IOException
+    {
+        return standardize(decode(inputFile));
+    }
 
-  @Override
-  public boolean isAbleToDecode(File file) {
-    return aacFile.isOfThisType(file);
-  }
+    @Override
+    public AudioInputStream decode(File inputFile)
+            throws UnsupportedAudioFileException, IOException
+    {
+        AudioInputStream result = null;
 
-  private AudioInputStream decodeAAC(File inputFile) throws IOException {
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    AudioFormat audioFormat = null;
-
-    try {
-      final ADTSDemultiplexer adts = new ADTSDemultiplexer(new FileInputStream(inputFile));
-      final Decoder dec = new Decoder(adts.getDecoderSpecificInfo());
-
-      final SampleBuffer buf = new SampleBuffer();
-      byte[] b;
-      while (true) {
+        /*
+         * We cascade different methods here since every one is usable for
+         * another type of aac file.
+         */
         try {
-          b = adts.readNextFrame();
+            result = new AACAudioFileReader().getAudioInputStream(inputFile);
+        } catch (Exception e) {
+            // nop
         }
-        catch (Exception e) {
-          break;
+
+        if (result == null) {
+            try {
+                result = decodeAAC(inputFile);
+            } catch (Exception e) {
+                result = decodeMP4(inputFile);
+            }
         }
 
-        dec.decodeFrame(b, buf);
-        outputStream.write(buf.getData());
-      }
-
-      audioFormat = new AudioFormat(buf.getSampleRate(), buf.getBitsPerSample(), buf.getChannels(), true, buf.isBigEndian());
-
-    } finally {
-      // nop
+        return result;
     }
 
-    byte[] outputStreamByteArray = outputStream.toByteArray();
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStreamByteArray);
-
-    return new AudioInputStream(inputStream, audioFormat, outputStreamByteArray.length);
-  }
-
-  private AudioInputStream decodeMP4(File inputFile) throws UnsupportedAudioFileException, IOException {
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    AudioFormat audioFormat = null;
-
-    try {
-
-      RandomAccessFile randomAccessFile = new RandomAccessFile(inputFile, "r");
-      final MP4Container cont = new MP4Container(randomAccessFile);
-      final Movie movie = cont.getMovie();
-      final List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
-      if (tracks.isEmpty()) {
-        throw new UnsupportedAudioFileException("Movie does not contain any AAC track");
-      }
-
-      final AudioTrack track = (AudioTrack) tracks.get(0);
-      final Decoder dec = new Decoder(track.getDecoderSpecificInfo());
-
-      Frame frame;
-      final SampleBuffer buf = new SampleBuffer();
-      while (track.hasMoreFrames()) {
-        frame = track.readNextFrame();
-        dec.decodeFrame(frame.getData(), buf);
-        outputStream.write(buf.getData());
-      }
-
-      audioFormat = new AudioFormat(track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
-    } finally {
-      // nop
+    @Override
+    public boolean isAbleToDecode(File file) {
+        return aacFile.isOfThisType(file);
     }
 
-    byte[] outputStreamByteArray = outputStream.toByteArray();
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStreamByteArray);
+    private AudioInputStream decodeAAC(File inputFile) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        AudioFormat audioFormat = null;
 
-    return new AudioInputStream(inputStream, audioFormat, outputStreamByteArray.length);
-  }
+        try {
+            final ADTSDemultiplexer adts = new ADTSDemultiplexer(
+                    new FileInputStream(inputFile));
+            final Decoder dec = new Decoder(adts.getDecoderSpecificInfo());
+
+            final SampleBuffer buf = new SampleBuffer();
+            byte[] b;
+            while (true) {
+                try {
+                    b = adts.readNextFrame();
+                } catch (Exception e) {
+                    break;
+                }
+
+                dec.decodeFrame(b, buf);
+                outputStream.write(buf.getData());
+            }
+
+            audioFormat = new AudioFormat(buf.getSampleRate(),
+                    buf.getBitsPerSample(), buf.getChannels(), true,
+                    buf.isBigEndian());
+
+        } finally {
+            // nop
+        }
+
+        byte[] outputStreamByteArray = outputStream.toByteArray();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                outputStreamByteArray);
+
+        return new AudioInputStream(inputStream, audioFormat,
+                outputStreamByteArray.length);
+    }
+
+    private AudioInputStream decodeMP4(File inputFile)
+            throws UnsupportedAudioFileException, IOException
+    {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        AudioFormat audioFormat = null;
+
+        try {
+
+            RandomAccessFile randomAccessFile = new RandomAccessFile(inputFile,
+                    "r");
+            final MP4Container cont = new MP4Container(randomAccessFile);
+            final Movie movie = cont.getMovie();
+            final List<Track> tracks = movie
+                    .getTracks(AudioTrack.AudioCodec.AAC);
+            if (tracks.isEmpty()) {
+                throw new UnsupportedAudioFileException(
+                        "Movie does not contain any AAC track");
+            }
+
+            final AudioTrack track = (AudioTrack) tracks.get(0);
+            final Decoder dec = new Decoder(track.getDecoderSpecificInfo());
+
+            Frame frame;
+            final SampleBuffer buf = new SampleBuffer();
+            while (track.hasMoreFrames()) {
+                frame = track.readNextFrame();
+                dec.decodeFrame(frame.getData(), buf);
+                outputStream.write(buf.getData());
+            }
+
+            audioFormat = new AudioFormat(track.getSampleRate(),
+                    track.getSampleSize(), track.getChannelCount(), true, true);
+        } finally {
+            // nop
+        }
+
+        byte[] outputStreamByteArray = outputStream.toByteArray();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                outputStreamByteArray);
+
+        return new AudioInputStream(inputStream, audioFormat,
+                outputStreamByteArray.length);
+    }
+
+    @Override
+    public AudioInputStream standardize(AudioInputStream ais) {
+        return audioStandardizer.standardize(ais);
+    }
+
+    @Override
+    public AudioFormat getAudioFormat(File inputFile)
+            throws UnsupportedAudioFileException, IOException
+    {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        AudioFormat audioFormat = null;
+
+        try {
+
+            RandomAccessFile randomAccessFile = new RandomAccessFile(inputFile,
+                    "r");
+            final MP4Container cont = new MP4Container(randomAccessFile);
+            final Movie movie = cont.getMovie();
+            final List<Track> tracks = movie
+                    .getTracks(AudioTrack.AudioCodec.AAC);
+            if (tracks.isEmpty()) {
+                throw new UnsupportedAudioFileException(
+                        "Movie does not contain any AAC track");
+            }
+
+            final AudioTrack track = (AudioTrack) tracks.get(0);
+            final Decoder dec = new Decoder(track.getDecoderSpecificInfo());
+
+            Frame frame;
+            final SampleBuffer buf = new SampleBuffer();
+            while (track.hasMoreFrames()) {
+                frame = track.readNextFrame();
+                dec.decodeFrame(frame.getData(), buf);
+                outputStream.write(buf.getData());
+            }
+
+            audioFormat = new AudioFormat(track.getSampleRate(),
+                    track.getSampleSize(), track.getChannelCount(), true, true);
+        } finally {
+            // nop
+        }
+        return audioFormat;
+    }
+
+    @Override
+    public String getAudioContainer() {
+        return "AAC";
+    }
 }
