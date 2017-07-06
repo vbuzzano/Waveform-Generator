@@ -123,7 +123,6 @@ public class WaveformGenerator {
                 max = (int) ((double) (max * -1) * yRatio);
                 min = (int) ((double) (min * -1) * yRatio);
                 avgY = (int) ((double) (avgY * -1) * yRatio);
-                System.out.println(y);
 
                 // set space between point
                 int xSpace = 1;
